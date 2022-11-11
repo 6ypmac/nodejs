@@ -3,7 +3,7 @@ import { pipeline } from 'node:stream';
 import csv from 'csvtojson';
 
 const csvFilePath = './csv/nodejs-hw1-ex1.csv';
-const txtResultFilePath = './task3/nodejs-hw1-ex2.txt';
+const txtResultFilePath = './src/module1/task3/nodejs-hw1-ex2.txt';
 
 const readFromStream = csv();
 const readableStream = fs.createReadStream(csvFilePath);
