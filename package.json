@@ -7,8 +7,11 @@
     "module1_task1": "nodemon src/module1/task1/index",
     "module1_task2": "nodemon src/module1/task2/index",
     "module1_task3": "nodemon --exec babel-node src/module1/task3/index",
-    "module2_tasks": "nodemon src/module2/tasks/server.js",
-    "module3_tasks": "nodemon src/module3/app.js"
+    "module2_tasks": "nodemon src/module2/tasks/server",
+    "module3_tasks": "nodemon src/module3/app",
+    "module4_tasks": "nodemon src/module4/app",
+    "db:create": "node src/module4/models/seeds/index",
+    "db:clear": "node src/module4/models/seeds/clear"
   },
   "repository": {
     "type": "git",
