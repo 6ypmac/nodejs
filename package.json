@@ -9,9 +9,9 @@
     "module1_task3": "nodemon --exec babel-node src/module1/task3/index",
     "module2_tasks": "nodemon src/module2/tasks/server",
     "module3_tasks": "nodemon src/module3/app",
-    "module4_tasks": "nodemon src/module4/app",
-    "db:create": "node src/module4/models/seeds/index",
-    "db:clear": "node src/module4/models/seeds/clear"
+    "module_db_tasks": "nodemon src/module_db/app",
+    "db:create": "node src/module_db/models/seeds/index",
+    "db:clear": "node src/module_db/models/seeds/clear"
   },
   "repository": {
     "type": "git",
@@ -32,7 +32,8 @@
     "joi": "^17.7.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.25.6"
+    "sequelize": "^6.25.6",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",

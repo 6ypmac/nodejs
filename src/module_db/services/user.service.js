@@ -44,44 +44,51 @@ class UserService {
         return list;
     }
 
-    getUserById() {
+    async getUserById() {
         const id = this.reqParams.id;
 
-        return User.findByPk(id);
+        try {
+            const user = await User.findByPk(id);
+        
+            return user;            
+        } catch (error) {
+            return;
+        }
     }
 
     async updateUserById() {
         const { login, password, age } = this.regBody;
         const id = this.reqParams.id;
 
-        const user = await User.findByPk(id);
+        try {
+            const user = await User.findByPk(id);
 
-        if (!user) {
+            user.login = login;
+            user.password = password;
+            user.age = age;
+        
+            await user.save();
+        
+            return user;            
+        } catch (error) {
             return;
         }
-
-        user.login = login;
-        user.password = password;
-        user.age = age;
-
-        await user.save();
-
-        return user;
     }
 
-    deleteUserById() {
+    async deleteUserById() {
         const id = this.reqParams.id;
 
-        const user = User.update({
-            isDeleted: true,
-        }, {
-            where: {
-                id,
-                isDeleted: false,
-            }
-        });
+        try {
+            const user = await User.findByPk(id);
 
-        return user;
+            user.isDeleted = true;
+        
+            await user.save();
+        
+            return user;            
+        } catch (error) {
+            return;
+        }
     }
 }
 

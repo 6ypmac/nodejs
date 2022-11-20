@@ -6,6 +6,8 @@ async function createExpressApp() {
     const app = express();
     const appPort = config.app.port;
 
+    console.log(config.db.host);
+
     loaders(app);
 
     // listen for requests

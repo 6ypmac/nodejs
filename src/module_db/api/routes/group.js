@@ -43,8 +43,8 @@ router.put('/:id', groupValidator, async (req, res) => {
     const groupService = new GroupService(req);
     const group = await groupService.updateGroupById();
 
-    if (group[0] !== 0) {
-        res.status(201).send(group[1]);
+    if (group) {
+        res.status(201).send(group);
     } else {
         res.status(404).send('Group with this ID is not exist!');
     }
@@ -54,7 +54,7 @@ router.delete('/:id', async (req, res) => {
     const groupService = new GroupService(req);
     const group = await groupService.deleteGroupById();
 
-    if (group[0] !== 0) {
+    if (group) {
         res.status(204).send();
     } else {
         res.status(404).send('Group with this ID is not exist!');

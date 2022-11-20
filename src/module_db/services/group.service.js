@@ -12,7 +12,6 @@ class GroupService {
     createGroup() {
         const { name, permissions } = this.regBody;
         const id = randomUUID();
-        const isDeleted = false;
         
         return Group.create({ id, name, permissions });
     }
@@ -21,24 +20,34 @@ class GroupService {
         return Group.findAll();
     }
 
-    getGroupById() {
+    async getGroupById() {
         const id = this.reqParams.id;
 
-        return Group.findByPk(id);
+        try {
+            const group = await Group.findByPk(id);
+        
+            return group;            
+        } catch (error) {
+            return;
+        }
     }
 
     async updateGroupById() {
         const { name, permissions } = this.regBody;
         const id = this.reqParams.id;
 
-        const group = await Group.findByPk(id);
+        try {
+            const group = await Group.findByPk(id);
         
-        group.name = name;
-        group.permissions = permissions;
-    
-        await group.save();
-    
-        return group; 
+            group.name = name;
+            group.permissions = permissions;
+        
+            await group.save();
+        
+            return group;
+        } catch (error) {
+            return;
+        }        
     }
 
     async deleteGroupById() {
@@ -63,7 +72,6 @@ class GroupService {
     
             return group;            
         } catch(error) {
-            console.log(error);
             await transaction.rollback();
         }
     }
@@ -72,15 +80,10 @@ class GroupService {
         const { userIds } = this.regBody;
         const groupId = this.reqParams.id;
 
-        const transaction = await sequelize.transaction();
-        const group = await Group.findByPk(groupId, { transaction });
-        // console.log("group: " + JSON.stringify(group, null, 4));
-
-        if (!group) {
-            return;
-        }
+        const transaction = await sequelize.transaction();        
 
         try {
+            const group = await Group.findByPk(groupId, { transaction });
             const users = await User.findAll({
                 where: {
                     id: userIds,
@@ -106,7 +109,6 @@ class GroupService {
 
             return userGroup;
         } catch (error) {
-            console.log(error);
             await transaction.rollback();
         }
     }

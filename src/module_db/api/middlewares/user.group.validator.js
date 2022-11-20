@@ -6,7 +6,6 @@ const userGroupValidationSchema = Joi.object({
 });
 
 const userGroupValidator = (schema) => (req, res, next) => {
-    console.log('req.body: ' + JSON.stringify(req.body, null, 4));
     const { error } = schema.validate(req.body);
     if (error) {
         res.status(422).json({
