@@ -5,8 +5,8 @@ const { serviceMethodLogger, logUnhandledErrors } = require('../api/middlewares'
 const databaseLoader = async (app) => {
     app.use(express.json());
 
-    app.use(serviceMethodLogger);    
-    app.use(logUnhandledErrors);
+    app.use(serviceMethodLogger);
+    app.use(logUnhandledErrors);    
 
     app.use('/users', userRouter);
     app.use('/groups', groupRouter);

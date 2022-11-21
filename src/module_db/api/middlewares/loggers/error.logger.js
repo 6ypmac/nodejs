@@ -7,7 +7,6 @@ const loggerFormat = printf(({ level, message, timestamp }) => {
 });
 
 const errorLogger = createLogger({
-    level: 'error',
     format: combine(
         colorize(),
         timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),

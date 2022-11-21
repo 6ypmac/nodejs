@@ -1,11 +1,12 @@
-const { errorLogger } = require('./loggers/error.logger');
+const errorLogger = require('./loggers/error.logger');
 
 const logUnhandledErrors = (err, req, res, next) => {
     if (err) {
-        res.status(500).send('Failed to process');
-        errorLogger.error(`${err.status || 500} - ${res.statusMessage} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+        res.status(500).send(`Failed to process request: ${err.name}, ${err.message}`);
     }
-    next();
+    const message = `[${req.method}] ${req.originalUrl} - ${err.name}, ${err.message}`;
+    errorLogger.error(message);
+    next();   
 }
 
 module.exports = logUnhandledErrors;

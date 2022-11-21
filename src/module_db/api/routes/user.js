@@ -5,7 +5,7 @@ const { UserService } = require('../../services');
 
 router.post('/', userValidator, async (req, res) => {
     const userService = new UserService(req);  
-    const user = await userService.createUser();
+    const user = await userService.createUser();    
     
     res.status(201).send(user);
 });
