@@ -1,7 +1,7 @@
 const express = require('express');
 const loaders = require('./loaders');
 const { config } = require('./config');
-const errorLogger = require('./api/middlewares/loggers/error.logger');
+const logger = require('./api/middlewares/loggers');
 
 function createExpressApp() {
     const app = express();
@@ -12,17 +12,17 @@ function createExpressApp() {
     // listen for requests
     app.listen(appPort, () => {
         const message = `Server is ready and listening on port ${appPort}`;
-        errorLogger.info(message);
-    });
+        logger.info(message);
+    });    
 
     process.on('uncaughtException', error => {
         const message = `${error.stack}`;
-        errorLogger.error(message);
+        logger.error(message);
     });
     
     process.on('unhandledRejection', () => {
         const message = 'Unhandled rejection was detected within the application';
-        errorLogger.error(message);
+        logger.error(message);
     });
 }
 

@@ -2,30 +2,29 @@ const { Op } = require('sequelize');
 const { User } = require('../models');
 const { isEmptyObject } = require('../utils');
 const { randomUUID } = require('crypto');
-const errorLogger = require('../api/middlewares/loggers/error.logger');
+const { serviceMethodLogger } = require('../api/middlewares');
 
 class UserService {
-    constructor(request) {
-        this.reqBody = request.body;
-        this.reqQuery = request.query;
-        this.reqParams = request.params;
+    constructor(req, res, next) {
+        this.req = req;
+        this.res = res;
+        this.next = next;
     }
 
     createUser() {
-        const { login, password, age } = this.reqBody;
+        const { login, password, age } = this.req.body;
         const id = randomUUID();
         const isDeleted = false;
 
         try {
             return User.create({ id, login, password, age, isDeleted });
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     getUsers() {
-        const reqQuery = this.reqQuery || {};
+        const reqQuery = this.req.query || {};
         let list = [];
 
         try {
@@ -50,27 +49,24 @@ class UserService {
     
             return list;
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }        
     }
 
     async getUserById() {
-        const id = this.reqParams.id;
+        const id = this.req.params.id;
 
         try {
             const user = await User.findByPk(id);
-        
             return user;            
-        } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+        } catch (error) {            
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     async updateUserById() {
-        const { login, password, age } = this.reqBody;
-        const id = this.reqParams.id;
+        const { login, password, age } = this.req.body;
+        const id = this.req.params.id;
 
         try {
             const user = await User.findByPk(id);
@@ -83,13 +79,12 @@ class UserService {
         
             return user;            
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     async deleteUserById() {
-        const id = this.reqParams.id;
+        const id = this.req.params.id;
 
         console.log("id: " + id);
 
@@ -102,8 +97,7 @@ class UserService {
         
             return user;            
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 }

@@ -1,24 +1,24 @@
 const { User, Group, UserGroup } = require('../models');
 const { sequelize } = require('../config');
 const { randomUUID } = require('crypto');
-const errorLogger = require('../api/middlewares/loggers/error.logger');
+const logger = require('../api/middlewares/loggers');
+const { serviceMethodLogger } = require('../api/middlewares');
 
 class GroupService {
-    constructor(request) {
-        this.reqBody = request.body;
-        this.reqQuery = request.query;
-        this.reqParams = request.params;
+    constructor(req, res, next) {
+        this.req = req;
+        this.res = res;
+        this.next = next;
     }
 
     createGroup() {
-        const { name, permissions } = this.reqBody;
-        const id = randomUUID();
+        const { name, permissions } = this.req.body;
+        const id = randomUUID();        
 
         try {
             return Group.create({ id, name, permissions });
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
@@ -26,27 +26,25 @@ class GroupService {
         try {
             return Group.findAll();
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     async getGroupById() {
-        const id = this.reqParams.id;
+        const id = this.req.params.id;
 
         try {
             const group = await Group.findByPk(id);
         
             return group;            
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     async updateGroupById() {
-        const { name, permissions } = this.reqBody;
-        const id = this.reqParams.id;
+        const { name, permissions } = this.req.body;
+        const id = this.req.params.id;
 
         try {
             const group = await Group.findByPk(id);
@@ -58,13 +56,12 @@ class GroupService {
         
             return group;
         } catch (error) {
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }        
     }
 
     async deleteGroupById() {
-        const id = this.reqParams.id;
+        const id = this.req.params.id;
         const transaction = await sequelize.transaction();
 
         try {
@@ -85,14 +82,13 @@ class GroupService {
             return group;            
         } catch(error) {
             await transaction.rollback();
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 
     async addUsersToGroup() {        
-        const { userIds } = this.reqBody;
-        const groupId = this.reqParams.id;
+        const { userIds } = this.req.body;
+        const groupId = this.req.params.id;
 
         const transaction = await sequelize.transaction();        
 
@@ -124,8 +120,7 @@ class GroupService {
             return userGroup;
         } catch (error) {
             await transaction.rollback();
-            const message = `${error.stack}`;
-            errorLogger.error(message);
+            serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }
 }

@@ -1,69 +1,99 @@
 const { UserService } = require('../services');
+const { serviceMethodLogger } = require('../api/middlewares');
 
 const createUser = async (req, res, next) => {
     try {
-        const userService = new UserService(req);
+        const userService = new UserService(req, res, next);
         const user = await userService.createUser();
 
-        res.setHeader('Location', `${req.path}/${user.id}`);
-        res.status(201).send(user);
+        if (user) {
+            res.setHeader('Location', `${req.path}/${user.id}`);
+            res.status(201).send(user);
+        } else {
+            const message = 'Entry was not added to the database table.';
+            const err = { message };
+            res.status(400).send(message);
+            serviceMethodLogger(err, req, res, next);
+        }        
     } catch (error) {
+        serviceMethodLogger(error, req, res, next);
         return next(error);
+        
     }
 };
 
 const getUsers = async (req, res, next) => {
     try {
-        const userService = new UserService(req);
+        const userService = new UserService(req, res, next);
         const list = await userService.getUsers();
-
-        res.status(200).send(list);
+        
+        if (list) {
+            res.status(200).send(list);
+        } else {
+            const message = 'Users not found.';
+            const err = { message };
+            res.status(404).send(message);
+            serviceMethodLogger(err, req, res, next);
+        }        
     } catch (error) {
+        serviceMethodLogger(error, req, res, next);
         return next(error);
     }
 };
 
 const getUserById = async (req, res, next) => {
     try {
-        const userService = new UserService(req);
+        const userService = new UserService(req, res, next);
         const user = await userService.getUserById();
     
         if (user) {
             res.status(200).send(user);
-        } else {     
-            res.status(404).send('User with this ID is not exist!');
+        } else {
+            const message = 'User with this ID is not exist.';
+            const err = { message };
+            res.status(404).send(message);
+            serviceMethodLogger(err, req, res, next);
         }
     } catch (error) {
+        serviceMethodLogger(error, req, res, next);
         return next(error);
     }
 };
 
 const updateUserById = async (req, res, next) => {
     try {
-        const userService = new UserService(req);    
+        const userService = new UserService(req, res, next);    
         const user = await userService.updateUserById();
 
         if (user) {
-            res.status(201).send(user);
+            res.status(202).send(user);
         } else {
-            res.status(404).send('User with this ID is not exist!');
+            const message = 'User with this ID is not exist.';
+            const err = { message };
+            res.status(404).send(message);
+            serviceMethodLogger(err, req, res, next);
         }
     } catch (error) {
+        serviceMethodLogger(error, req, res, next);
         return next(error);
     }
 };
 
 const deleteUserById = async (req, res, next) => {
     try {
-        const userService = new UserService(req);
+        const userService = new UserService(req, res, next);
         const user = await userService.deleteUserById();
 
         if (user) {
-            res.status(204).send();
+            res.status(204).send(user);
         } else {
-            res.status(404).send('User with this ID is not exist!');
+            const message = 'User with this ID is not exist.';
+            const err = { message };
+            res.status(404).send(message);
+            serviceMethodLogger(err, req, res, next);
         }
     } catch (error) {
+        serviceMethodLogger(error, req, res, next);
         return next(error);
     }
 };
