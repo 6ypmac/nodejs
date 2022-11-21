@@ -1,23 +1,34 @@
 const { User, Group, UserGroup } = require('../models');
 const { sequelize } = require('../config');
 const { randomUUID } = require('crypto');
+const errorLogger = require('../api/middlewares/loggers/error.logger');
 
 class GroupService {
     constructor(request) {
-        this.regBody = request.body;
+        this.reqBody = request.body;
         this.reqQuery = request.query;
         this.reqParams = request.params;
     }
 
     createGroup() {
-        const { name, permissions } = this.regBody;
+        const { name, permissions } = this.reqBody;
         const id = randomUUID();
-        
-        return Group.create({ id, name, permissions });
+
+        try {
+            return Group.create({ id, name, permissions });
+        } catch (error) {
+            const message = `${error.stack}`;
+            errorLogger.error(message);
+        }
     }
 
-    getGroups() {
-        return Group.findAll();
+    getGroups() {        
+        try {
+            return Group.findAll();
+        } catch (error) {
+            const message = `${error.stack}`;
+            errorLogger.error(message);
+        }
     }
 
     async getGroupById() {
@@ -28,12 +39,13 @@ class GroupService {
         
             return group;            
         } catch (error) {
-            return;
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 
     async updateGroupById() {
-        const { name, permissions } = this.regBody;
+        const { name, permissions } = this.reqBody;
         const id = this.reqParams.id;
 
         try {
@@ -46,13 +58,13 @@ class GroupService {
         
             return group;
         } catch (error) {
-            return;
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }        
     }
 
     async deleteGroupById() {
         const id = this.reqParams.id;
-
         const transaction = await sequelize.transaction();
 
         try {
@@ -73,11 +85,13 @@ class GroupService {
             return group;            
         } catch(error) {
             await transaction.rollback();
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 
     async addUsersToGroup() {        
-        const { userIds } = this.regBody;
+        const { userIds } = this.reqBody;
         const groupId = this.reqParams.id;
 
         const transaction = await sequelize.transaction();        
@@ -110,6 +124,8 @@ class GroupService {
             return userGroup;
         } catch (error) {
             await transaction.rollback();
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 }

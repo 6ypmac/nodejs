@@ -1,53 +1,24 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 const { userValidator }  = require('../middlewares');
-const { UserService } = require('../../services');
+const { UserController } = require('../../controllers');
 
-router.post('/', userValidator, async (req, res) => {
-    const userService = new UserService(req);  
-    const user = await userService.createUser();    
-    
-    res.status(201).send(user);
-});
+const {
+    createUser,
+    getUsers,
+    getUserById,
+    updateUserById,
+    deleteUserById
+} = UserController;
 
-router.get('/', async function (req, res) {
-    const userService = new UserService(req);
-    const list = await userService.getUsers();
+router.post('/', userValidator, createUser);
 
-    res.status(200).send(list);
-});
+router.get('/', getUsers);
 
-router.get('/:id', async (req, res) => {    
-    const userService = new UserService(req);
-    const user = await userService.getUserById();
-  
-    if (user) {
-        res.status(200).send(user);
-    } else {     
-        res.status(404).send('User with this ID is not exist!');
-    }
-});
+router.get('/:id', getUserById);
 
-router.put('/:id', userValidator, async (req, res) => {
-    const userService = new UserService(req);    
-    const user = await userService.updateUserById();
+router.put('/:id', userValidator, updateUserById);
 
-    if (user) {
-        res.status(201).send(user);
-    } else {
-        res.status(404).send('User with this ID is not exist!');
-    }
-});
-
-router.delete('/:id', async (req, res) => {
-    const userService = new UserService(req);
-    const user = await userService.deleteUserById();
-
-    if (user) {
-        res.status(204).send();
-    } else {
-        res.status(404).send('User with this ID is not exist!');
-    }
-});
+router.delete('/:id', deleteUserById);
 
 module.exports = router;

@@ -2,46 +2,57 @@ const { Op } = require('sequelize');
 const { User } = require('../models');
 const { isEmptyObject } = require('../utils');
 const { randomUUID } = require('crypto');
+const errorLogger = require('../api/middlewares/loggers/error.logger');
 
 class UserService {
     constructor(request) {
-        this.regBody = request.body;
+        this.reqBody = request.body;
         this.reqQuery = request.query;
         this.reqParams = request.params;
     }
 
     createUser() {
-        const { login, password, age } = this.regBody;
+        const { login, password, age } = this.reqBody;
         const id = randomUUID();
         const isDeleted = false;
-        
-        return User.create({ id, login, password, age, isDeleted });
+
+        try {
+            return User.create({ id, login, password, age, isDeleted });
+        } catch (error) {
+            const message = `${error.stack}`;
+            errorLogger.error(message);
+        }
     }
 
     getUsers() {
         const reqQuery = this.reqQuery || {};
         let list = [];
 
-        if (!isEmptyObject(reqQuery)) {
-            const {
-                loginSubstring,
-                limit
-            } = reqQuery;
-    
-            list = User.findAll({
-                where: {
-                    login: {
-                        [Op.iLike]: `%${loginSubstring}%`,
+        try {
+            if (!isEmptyObject(reqQuery)) {
+                const {
+                    loginSubstring,
+                    limit
+                } = reqQuery;
+        
+                list = User.findAll({
+                    where: {
+                        login: {
+                            [Op.iLike]: `%${loginSubstring}%`,
+                        },
                     },
-                },
-                order: ['login'],
-                limit,
-            });
-        } else {
-            list = User.findAll();
-        }
-
-        return list;
+                    order: ['login'],
+                    limit,
+                });
+            } else {
+                list = User.findAll();
+            }
+    
+            return list;
+        } catch (error) {
+            const message = `${error.stack}`;
+            errorLogger.error(message);
+        }        
     }
 
     async getUserById() {
@@ -52,12 +63,13 @@ class UserService {
         
             return user;            
         } catch (error) {
-            return;
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 
     async updateUserById() {
-        const { login, password, age } = this.regBody;
+        const { login, password, age } = this.reqBody;
         const id = this.reqParams.id;
 
         try {
@@ -71,12 +83,15 @@ class UserService {
         
             return user;            
         } catch (error) {
-            return;
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 
     async deleteUserById() {
         const id = this.reqParams.id;
+
+        console.log("id: " + id);
 
         try {
             const user = await User.findByPk(id);
@@ -87,7 +102,8 @@ class UserService {
         
             return user;            
         } catch (error) {
-            return;
+            const message = `${error.stack}`;
+            errorLogger.error(message);
         }
     }
 }
