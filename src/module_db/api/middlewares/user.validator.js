@@ -7,7 +7,7 @@ const userValidationSchema = Joi.object({
     age: Joi.number().min(1).max(150).required(),
 });
 
-const userValidator = (schema) => (req, res, next) => {
+const userValidator = (schema) => (req, res, next) => {    
     const { error } = schema.validate(req.body);
     if (error) {
         res.status(422).json({
