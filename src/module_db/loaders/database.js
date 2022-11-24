@@ -1,13 +1,17 @@
 const express = require('express');
-const { userRouter, groupRouter } = require('../api/routes');
-const { serviceMethodLogger, logUnhandledErrors } = require('../api/middlewares');
+const cors = require('cors');
+const { userRouter, groupRouter, authRouter } = require('../api/routes');
+const { serviceMethodLogger, logUnhandledErrors, jwtToken } = require('../api/middlewares');
 
 const databaseLoader = async (app) => {
+    app.use(cors());
     app.use(express.json());
 
     app.use(serviceMethodLogger);
-    app.use(logUnhandledErrors);    
+    app.use(logUnhandledErrors);
+    app.use(jwtToken);
 
+    app.use('/', authRouter);
     app.use('/users', userRouter);
     app.use('/groups', groupRouter);
 }

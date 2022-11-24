@@ -58,8 +58,26 @@ class UserService {
 
         try {
             const user = await User.findByPk(id);
+
             return user;            
         } catch (error) {            
+            serviceMethodLogger(error, this.req, this.res, this.next);
+        }
+    }
+
+    async getUserByCredentials() {
+        const { login, password } = this.req.body;
+
+        try {
+            const user = await User.findOne({
+                where: {
+                    login,
+                    password
+                }
+            });
+
+            return user;
+        } catch (error) {
             serviceMethodLogger(error, this.req, this.res, this.next);
         }
     }

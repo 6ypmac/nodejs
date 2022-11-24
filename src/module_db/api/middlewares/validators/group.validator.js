@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { constants } = require('../../config');
+const { constants } = require('../../../config');
 
 const { READ, WRITE, DELETE, SHARE, UPLOAD_FILES } = constants.PERMISSONS;
 

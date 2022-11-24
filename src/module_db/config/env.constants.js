@@ -17,5 +17,7 @@ module.exports = {
         name: process.env.DB_NAME,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD
-    }
+    },
+
+    jwtSecret: process.env.JWT_SECRET || (Math.random() * Math.pow(10, 16)).toString()
 };
