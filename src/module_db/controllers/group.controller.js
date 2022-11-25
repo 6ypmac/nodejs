@@ -7,12 +7,12 @@ const createGroup = async (req, res, next) => {
         const group = await groupService.createGroup();
 
         if (group) {
-            res.setHeader('Location', `${req.path}/${group.id}`);
+            res.setHeader('Location', `${req.baseUrl}/${group.id}`);
             res.status(201).send(group);
         } else {
             const message = 'Entry was not added to the database table.';
             const err = { message };
-            res.status(400).send(message);
+            res.status(422).send(message);
             serviceMethodLogger(err, req, res, next);
         }
     } catch (error) {
@@ -88,7 +88,7 @@ const updateGroupById = async (req, res, next) => {
         } else {
             const message = 'Group with this ID is not exist.';
             const err = { message };
-            res.status(404).send(message);
+            res.status(422).send(message);
             serviceMethodLogger(err, req, res, next);
         }
     } catch (error) {

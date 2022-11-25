@@ -11,7 +11,9 @@
     "module3_tasks": "nodemon src/module3/app",
     "module_db_tasks": "nodemon src/module_db/app",
     "db:create": "node src/module_db/models/seeds/index",
-    "db:clear": "node src/module_db/models/seeds/clear"
+    "db:clear": "node src/module_db/models/seeds/clear",
+    "test": "jest --detectOpenHandles",
+    "test:live": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,8 @@
     "@babel/node": "^7.20.2",
     "@babel/preset-env": "^7.20.2",
     "eslint": "^8.27.0",
-    "nodemon": "^2.0.20"
+    "jest": "^29.3.1",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.1"
   }
 }

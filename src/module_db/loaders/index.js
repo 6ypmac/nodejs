@@ -1,5 +1,4 @@
 const { sequelize } = require('../config');
-const databaseLoader = require('./database');
 const modelLoader = require('./model');
 const logger = require('../api/middlewares/loggers');
 
@@ -14,6 +13,5 @@ module.exports = async function(app) {
         logger.error(message);
     }    
 
-    databaseLoader(app);
     modelLoader();
 }
