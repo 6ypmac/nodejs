@@ -55,6 +55,7 @@ class UserService {
 
     async getUserById() {
         const id = this.req.params.id;
+        console.log('id: ' + id);
 
         try {
             const user = await User.findByPk(id);
@@ -103,8 +104,6 @@ class UserService {
 
     async deleteUserById() {
         const id = this.req.params.id;
-
-        console.log("id: " + id);
 
         try {
             const user = await User.findByPk(id);

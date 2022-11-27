@@ -1,13 +1,12 @@
-const express = require('express');
 const loaders = require('./loaders');
 const { config } = require('./config');
+const app = require('./loaders/express.app');
 const logger = require('./api/middlewares/loggers');
 
 function createExpressApp() {
-    const app = express();
     const appPort = config.app.port;
 
-    loaders(app);
+    loaders();
 
     // listen for requests
     app.listen(appPort, () => {
